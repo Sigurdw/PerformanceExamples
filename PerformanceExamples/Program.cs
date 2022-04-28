@@ -11,4 +11,6 @@ using PerformanceExamples;
 
 var summary = BenchmarkRunner.Run<BoxingTest>();
 
+//var summary = BenchmarkRunner.Run<SubstringTest>();
+
 Console.WriteLine(summary);
