@@ -11,7 +11,6 @@ public class FilterFunctionTest
         Programmer,
         Tester,
         Manager,
-        HR,
     }
 
     public record Worker(string name, decimal salary, WorkType workType);
@@ -39,23 +38,23 @@ public class FilterFunctionTest
     [Benchmark]
     public List<WorkerSummary> IEnumerableFilterLinqUseToListTest()
     {
-        var hrWorkers = GetHrWorkersLinqUseToList(workers);
-        var richHrWorkers = GetRichWorkersLinqUseToList(hrWorkers);
+        var managerWorkers = GetManagerWorkersLinqUseToList(workers);
+        var richManagerWorkers = GetRichWorkersLinqUseToList(managerWorkers);
 
-        decimal sumOfRichHrSalaries = richHrWorkers.Sum(x => x.salary);
+        decimal sumOfRichManagerSalaries = richManagerWorkers.Sum(x => x.salary);
 
-        var workerSummaries = new List<WorkerSummary>(richHrWorkers.Count());
-        foreach (var richHrWorker in richHrWorkers)
+        var workerSummaries = new List<WorkerSummary>(richManagerWorkers.Count());
+        foreach (var richManagerWorker in richManagerWorkers)
         {
-            workerSummaries.Add(new WorkerSummary(richHrWorker, richHrWorker.salary / sumOfRichHrSalaries));
+            workerSummaries.Add(new WorkerSummary(richManagerWorker, richManagerWorker.salary / sumOfRichManagerSalaries));
         }
 
         return workerSummaries;
     }
 
-    private static IEnumerable<Worker> GetHrWorkersLinqUseToList(IEnumerable<Worker> workers)
+    private static IEnumerable<Worker> GetManagerWorkersLinqUseToList(IEnumerable<Worker> workers)
     {
-        return workers.Where(x => x.workType == WorkType.HR).ToList();
+        return workers.Where(x => x.workType == WorkType.Manager).ToList();
     }
 
     private static IEnumerable<Worker> GetRichWorkersLinqUseToList(IEnumerable<Worker> workers)
@@ -66,23 +65,23 @@ public class FilterFunctionTest
     [Benchmark]
     public List<WorkerSummary> IEnumerableFilterLinqtTest()
     {
-        var hrWorkers = GetHrWorkersLinq(workers);
-        var richHrWorkers = GetRichWorkersLinq(hrWorkers);
+        var managerWorkers = GetManagerWorkersLinq(workers);
+        var richManagerWorkers = GetRichWorkersLinq(managerWorkers);
 
-        decimal sumOfRichHrSalaries = richHrWorkers.Sum(x => x.salary);
+        decimal sumOfRichManagerSalaries = richManagerWorkers.Sum(x => x.salary);
 
-        var workerSummaries = new List<WorkerSummary>(richHrWorkers.Count());
-        foreach (var richHrWorker in richHrWorkers)
+        var workerSummaries = new List<WorkerSummary>(richManagerWorkers.Count());
+        foreach (var richManagerWorker in richManagerWorkers)
         {
-            workerSummaries.Add(new WorkerSummary(richHrWorker, richHrWorker.salary / sumOfRichHrSalaries));
+            workerSummaries.Add(new WorkerSummary(richManagerWorker, richManagerWorker.salary / sumOfRichManagerSalaries));
         }
 
         return workerSummaries;
     }
 
-    private static IEnumerable<Worker> GetHrWorkersLinq(IEnumerable<Worker> workers)
+    private static IEnumerable<Worker> GetManagerWorkersLinq(IEnumerable<Worker> workers)
     {
-        return workers.Where(x => x.workType == WorkType.HR);
+        return workers.Where(x => x.workType == WorkType.Manager);
     }
 
     private static IEnumerable<Worker> GetRichWorkersLinq(IEnumerable<Worker> workers)
@@ -93,21 +92,21 @@ public class FilterFunctionTest
     [Benchmark]
     public List<WorkerSummary> IEnumerableFilterLinqTwoPassForeachTest()
     {
-        var hrWorkers = GetHrWorkersLinq(workers);
-        var richHrWorkers = GetRichWorkersLinq(hrWorkers);
+        var managerWorkers = GetManagerWorkersLinq(workers);
+        var richManagerWorkers = GetRichWorkersLinq(managerWorkers);
 
-        decimal sumOfRichHrSalaries = 0;
+        decimal sumOfRichManagerSalaries = 0;
         int count = 0;
-        foreach (var item in richHrWorkers)
+        foreach (var item in richManagerWorkers)
         {
-            sumOfRichHrSalaries += item.salary;
+            sumOfRichManagerSalaries += item.salary;
             count++;
         }
 
         var workerSummaries = new List<WorkerSummary>(count);
-        foreach (var richHrWorker in richHrWorkers)
+        foreach (var richManagerWorker in richManagerWorkers)
         {
-            workerSummaries.Add(new WorkerSummary(richHrWorker, richHrWorker.salary / sumOfRichHrSalaries));
+            workerSummaries.Add(new WorkerSummary(richManagerWorker, richManagerWorker.salary / sumOfRichManagerSalaries));
         }
 
         return workerSummaries;
@@ -116,21 +115,21 @@ public class FilterFunctionTest
     [Benchmark]
     public List<WorkerSummary> IntegratedFilterTwoListOnePassTest()
     {
-        List<Worker> richHRWorkers = new List<Worker>();
-        decimal sumOfRichHrSalaries = 0;
+        List<Worker> richManagerWorkers = new List<Worker>();
+        decimal sumOfRichManagerSalaries = 0;
         foreach (var worker in workers)
         {
-            if (worker.workType == WorkType.HR && worker.salary > halfSalary)
+            if (worker.workType == WorkType.Manager && worker.salary > halfSalary)
             {
-                sumOfRichHrSalaries += worker.salary;
-                richHRWorkers.Add(worker);
+                sumOfRichManagerSalaries += worker.salary;
+                richManagerWorkers.Add(worker);
             }
         }
 
-        var workerSummaries = new List<WorkerSummary>(richHRWorkers.Count);
-        foreach (var richHrWorker in richHRWorkers)
+        var workerSummaries = new List<WorkerSummary>(richManagerWorkers.Count);
+        foreach (var richManagerWorker in richManagerWorkers)
         {
-            workerSummaries.Add(new WorkerSummary(richHrWorker, richHrWorker.salary / sumOfRichHrSalaries));
+            workerSummaries.Add(new WorkerSummary(richManagerWorker, richManagerWorker.salary / sumOfRichManagerSalaries));
         }
 
         return workerSummaries;
@@ -139,13 +138,13 @@ public class FilterFunctionTest
     [Benchmark]
     public List<WorkerSummary> IntegratedFilterOneListTwoPassesTest()
     {
-        decimal sumOfRichHrSalaries = 0;
+        decimal sumOfRichManagerSalaries = 0;
         int count = 0;
         foreach (var worker in workers)
         {
-            if (worker.workType == WorkType.HR && worker.salary > halfSalary)
+            if (worker.workType == WorkType.Manager && worker.salary > halfSalary)
             {
-                sumOfRichHrSalaries += worker.salary;
+                sumOfRichManagerSalaries += worker.salary;
                 count++;
             }
         }
@@ -153,9 +152,9 @@ public class FilterFunctionTest
         var workerSummaries = new List<WorkerSummary>(count);
         foreach (var worker in workers)
         {
-            if (worker.workType == WorkType.HR && worker.salary > halfSalary)
+            if (worker.workType == WorkType.Manager && worker.salary > halfSalary)
             {
-                workerSummaries.Add(new WorkerSummary(worker, worker.salary / sumOfRichHrSalaries));
+                workerSummaries.Add(new WorkerSummary(worker, worker.salary / sumOfRichManagerSalaries));
             }
         }
 
@@ -165,15 +164,15 @@ public class FilterFunctionTest
     [Benchmark]
     public List<WorkerSummary> IntegratedFilterOneListOnePassTest()
     {
-        decimal sumOfRichHrSalaries = 0;
+        decimal sumOfRichManagerSalaries = 0;
         int count = 0;
         Span<int> indecies = stackalloc int[workers.Count];
         for (int i = 0; i < workers.Count; i++)
         {
             var worker = workers[i];
-            if (worker.workType == WorkType.HR && worker.salary > halfSalary)
+            if (worker.workType == WorkType.Manager && worker.salary > halfSalary)
             {
-                sumOfRichHrSalaries += worker.salary;
+                sumOfRichManagerSalaries += worker.salary;
                 indecies[0] = i;
                 count++;
             }
@@ -184,7 +183,7 @@ public class FilterFunctionTest
         {
             var index = indecies[i];
             var worker = workers[index];
-            workerSummaries.Add(new WorkerSummary(worker, worker.salary / sumOfRichHrSalaries));
+            workerSummaries.Add(new WorkerSummary(worker, worker.salary / sumOfRichManagerSalaries));
         }
 
         return workerSummaries;

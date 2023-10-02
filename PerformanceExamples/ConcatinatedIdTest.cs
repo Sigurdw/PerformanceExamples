@@ -15,7 +15,7 @@ public class ConcatinatedIdTest
     private const int iterations = 10000;
 
     [Benchmark]
-    public void ConcatinatedStringKey()
+    public List<Item> ConcatinatedStringKey()
     {
         var dictionary = new Dictionary<string, Item>();
         var keyList = new List<string>(iterations);
@@ -33,10 +33,12 @@ public class ConcatinatedIdTest
         {
             valueList.Add(dictionary[key]);
         }
+
+        return valueList;
     }
 
     [Benchmark]
-    public void ConcatinatedTupleKey()
+    public List<Item> ConcatinatedTupleKey()
     {
         var dictionary = new Dictionary<(Guid, Guid), Item>();
         var keyList = new List<(Guid, Guid)>(iterations);
@@ -54,5 +56,7 @@ public class ConcatinatedIdTest
         {
             valueList.Add(dictionary[key]);
         }
+
+        return valueList;
     }
 }
